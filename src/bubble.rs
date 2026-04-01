@@ -36,3 +36,28 @@ impl<T: Ord> Sorter<T> for BubbleSorter {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use rand::Rng;
+
+    #[test]
+    fn sorts_random_data() {
+        let mut data = [0u8; 32];
+        rand::rng().fill_bytes(&mut data);
+        let mut sorter = BubbleSorter::new(data.len());
+        for _ in 0..data.len() * data.len() {
+            sorter.sort_step(&mut data);
+        }
+        assert!(data.is_sorted());
+    }
+
+    #[test]
+    fn single_step_swaps_adjacent() {
+        let mut data = [3u8, 1, 2];
+        let mut sorter = BubbleSorter::new(data.len());
+        sorter.sort_step(&mut data);
+        assert_eq!(data, [1, 3, 2]);
+    }
+}
